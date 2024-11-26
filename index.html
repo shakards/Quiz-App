@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Application</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .quiz-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .question {
+            margin-bottom: 20px;
+        }
+
+        .options button {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            background: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .options button:hover {
+            background: #0056b3;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>Quiz App</h1>
+        <div id="quiz">
+            <div class="question" id="question">Question goes here</div>
+            <div class="options">
+                <button class="option-btn" data-option="0">Option 1</button>
+                <button class="option-btn" data-option="1">Option 2</button>
+                <button class="option-btn" data-option="2">Option 3</button>
+                <button class="option-btn" data-option="3">Option 4</button>
+            </div>
+        </div>
+        <div class="result hidden" id="result">Your score: 0/0</div>
+        <button id="restart-btn" class="hidden">Restart Quiz</button>
+    </div>
+
+    <script>
+        // Quiz Data
+        const quizData = [
+            {
+                question: "What is the capital of France?",
+                options: ["Paris", "London", "Berlin", "Rome"],
+                correct: 0
+            },
+            {
+                question: "Which programming language is used for web development?",
+                options: ["Python", "HTML", "C++", "Java"],
+                correct: 1
+            },
+            {
+                question: "What does CSS stand for?",
+                options: [
+                    "Computer Style Sheets",
+                    "Creative Style Sheets",
+                    "Cascading Style Sheets",
+                    "Colorful Style Sheets"
+                ],
+                correct: 2
+            }
+        ];
+
+        // References to DOM elements
+        const questionEl = document.getElementById('question');
+        const optionsBtns = document.querySelectorAll('.option-btn');
+        const resultEl = document.getElementById('result');
+        const restartBtn = document.getElementById('restart-btn');
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        // Function to load a question
+        function loadQuestion() {
+            const currentQuiz = quizData[currentQuestion];
+            questionEl.textContent = currentQuiz.question;
+            optionsBtns.forEach((btn, index) => {
+                btn.textContent = currentQuiz.options[index];
+                btn.classList.remove('hidden');
+            });
+        }
+
+        // Function to handle option selection
+        optionsBtns.forEach((btn) => {
+            btn.addEventListener('click', (e) => {
+                const selectedOption = parseInt(e.target.dataset.option);
+                const correctOption = quizData[currentQuestion].correct;
+
+                if (selectedOption === correctOption) {
+                    score++;
+                }
+
+                currentQuestion++;
+                if (currentQuestion < quizData.length) {
+                    loadQuestion();
+                } else {
+                    showResult();
+                }
+            });
+        });
+
+        // Show the result
+        function showResult() {
+            questionEl.classList.add('hidden');
+            optionsBtns.forEach((btn) => btn.classList.add('hidden'));
+            resultEl.textContent = `Your score: ${score}/${quizData.length}`;
+            resultEl.classList.remove('hidden');
+            restartBtn.classList.remove('hidden');
+        }
+
+        // Restart quiz
+        restartBtn.addEventListener('click', () => {
+            currentQuestion = 0;
+            score = 0;
+            questionEl.classList.remove('hidden');
+            resultEl.classList.add('hidden');
+            restartBtn.classList.add('hidden');
+            loadQuestion();
+        });
+
+        // Initialize quiz
+        loadQuestion();
+    </script>
+</body>
+</html>
